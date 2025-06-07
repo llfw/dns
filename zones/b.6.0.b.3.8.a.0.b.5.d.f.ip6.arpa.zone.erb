@@ -1,16 +1,22 @@
-$TTL 1h
-$ORIGIN b.6.0.b.3.8.a.0.b.5.d.f.ip6.arpa.
+; vim:set ft=eruby.bindzone sw=8 ts=8 sts=8:
 
-@	SOA hemlock.eden.le-fay.org. hostmaster.le-fay.org. (
-		1	1h	5m	8w	3m
-	;	serial	refresh	retry	expire	minimum
+$TTL <%= ttl %>
+$ORIGIN <%= zone %>.
+
+@	SOA	<%= soa_mname %> <%= soa_rname %> (
+		<%= soa_serial %>
+		<%= soa_refresh %>
+		<%= soa_retry %>
+		<%= soa_expire %>
+		<%= soa_minimum %>
 	)
-
-	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
 
 	NS	a.ns.le-fay.dn42.
 	NS	b.ns.le-fay.dn42.
 	NS	c.ns.le-fay.dn42.
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+	TXT	"v=spf1 -all"
 
 1.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR amaranth.eden.le-fay.dn42.
 2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0	PTR yarrow.le-fay.dn42.

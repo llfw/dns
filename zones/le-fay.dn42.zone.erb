@@ -1,12 +1,14 @@
-$TTL 1h
-$ORIGIN le-fay.dn42.
+; vim:set ft=eruby.bindzone sw=8 ts=8 sts=8:
 
-@	SOA	hemlock.eden.le-fay.org. hostmaster.le-fay.dn42. (
-		1	; serial
-		1h	; refresh
-		5m	; retry
-		8w	; expire
-		3m	; minimum
+$TTL <%= ttl %>
+$ORIGIN <%= zone %>.
+
+@	SOA	<%= soa_mname %> <%= soa_rname %> (
+		<%= soa_serial %>
+		<%= soa_refresh %>
+		<%= soa_retry %>
+		<%= soa_expire %>
+		<%= soa_minimum %>
 	)
 
 	NS	a.ns.le-fay.dn42.
@@ -14,7 +16,6 @@ $ORIGIN le-fay.dn42.
 	NS	c.ns.le-fay.dn42.
 
 	MX	10 smtp
-
 	TXT	"v=spf1 ip6:fd5b:a83:b06b:10::4 ~all"
 
 ; Services

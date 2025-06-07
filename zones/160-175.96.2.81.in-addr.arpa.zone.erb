@@ -1,0 +1,26 @@
+; vim:set ft=eruby.bindzone sw=8 ts=8 sts=8:
+
+$TTL <%= ttl %>
+$ORIGIN <%= zone %>.
+
+@	SOA	<%= soa_mname %> <%= soa_rname %> (
+		<%= soa_serial %>
+		<%= soa_refresh %>
+		<%= soa_retry %>
+		<%= soa_expire %>
+		<%= soa_minimum %>
+	)
+
+<% nameservers.split.each do |ns| %>
+        NS      <%= ns %>.
+<% end %>
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+	TXT	"v=spf1 -all"
+
+161	PTR	vlan401.core-1.inet.eden.le-fay.org.
+162	PTR	hemlock.eden.le-fay.org.
+163	PTR	witch.eden.le-fay.org.
+164	PTR	turnera.eden.le-fay.org.
+165	PTR	ilythia.le-fay.org.
+166	PTR	ragweed.le-fay.org.

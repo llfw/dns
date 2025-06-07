@@ -1,12 +1,31 @@
-# Our local master server.
+### Our local master server.
 MASTER=		hemlock.eden.le-fay.org
-MASTER_ADDR!=	getaddrinfo -f inet6 -p tcp -t stream hemlock.eden.le-fay.org|awk '{ print $$4 }'
+MASTER_ADDR!=	getaddrinfo -f inet6 -p tcp -t stream ${MASTER} \
+			| awk '{ print $$4 }'
 
-# The DN42 master server.
+### Default SOA values.
+# Serial is always 1; nsdiff handles this magically.
+SOA_MNAME=	${MASTER}.
+SOA_RNAME=	hostmaster.le-fay.org.
+SOA_SERIAL=	1
+SOA_REFRESH=	1d
+SOA_RETRY=	1h
+SOA_EXPIRE=	2w
+SOA_MINIMUM=	5m
+# Default value for $TTL.
+TTL=		1h
+# Nameservers to use for Internet zones.
+NAMESERVERS=	ns1.le-fay.org \
+		ns2.le-fay.org \
+		ns3.le-fay.org
+
+### The DN42 master server.
 DN42_MASTER=	fd42:4242:2601:ac53::1
 
-NSDIFF=		nsdiff
-NSDIFFFLAGS=	-Sserial -s ${MASTER}
+NSUPDATE?=	nsupdate
+NSUPDATE_FLAGS?=-g
+NSDIFF?=	nsdiff
+NSDIFFFLAGS?=	-Sserial -s ${MASTER}
 DIFF?=
 
 # The zones we serve.
@@ -25,6 +44,19 @@ ZONES=	le-fay.org \
 	192-207.47.187.81.in-addr.arpa \
 	0/26.76.23.172.in-addr.arpa \
 	18.198.in-addr.arpa
+
+# Template variables for primary zones.
+ZONE_PROCESS_FLAGS= \
+	-Dttl=${TTL} \
+	-Dnameservers="${NAMESERVERS}" \
+	-Dsoa_mname=${SOA_MNAME} \
+	-Dsoa_rname=${SOA_RNAME} \
+	-Dsoa_serial=${SOA_SERIAL} \
+	-Dsoa_refresh=${SOA_REFRESH} \
+	-Dsoa_retry=${SOA_RETRY} \
+	-Dsoa_expire=${SOA_EXPIRE} \
+	-Dsoa_minimum=${SOA_MINIMUM}
+
 
 # These zones are used for DN42.
 DN42_ZONES= \
@@ -73,39 +105,65 @@ UNBOUND_PROCESS_FLAGS= \
 UNBOUND_PROCESS_FLAGS.witch.le-fay.org=		-Dtls=yes
 UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
 
+# The default target doesn't do anything.
 all:
 	@echo "Please specify a target:"
 	@echo "  make diff           show diff between zone files and online zone"
 	@echo "  make update-zones   update online zones"
 	@echo "  make unbound-update build and install Unbound configs"
 
+# Define the clean target to do nothing; we add dependencies to this below.
 clean:
 
-.PATH: ${.CURDIR}/zones
+# File paths.
+ZONEDIR=${.CURDIR}/zones
+.PATH: ${ZONEDIR}
 .OBJDIR: ${.CURDIR}/build
+.SUFFIXES: .zone.erb .czone
 .PHONY: all update-zones clean
 
+### Define targets for primary zones.
+
 .for zone in ${ZONES}
+# Update this zone when running update-zones.
 update-zones: ${zone}
 
+# The zone itself is not a real file.
 .PHONY: ${zone}
 
-${zone}: ${zone:S,/,_,g}.zone
+# How to build a processed zone from a file zone.
+${zone:S,/,_,g}.czone: Makefile ${zone:S,/,_,g}.zone.erb
+	${.CURDIR}/bin/process			\
+		-Dzone=${zone}			\
+		${ZONE_PROCESS_FLAGS}		\
+		${ZONEDIR}/${zone:S,/,_,g}.zone.erb $@
+
+# Take the built .czone file and send it to nsdiff.
+# If DIFF is set, just print the diff instead of sending it to nsupdate.
+${zone}: ${zone:S,/,_,g}.czone
 .if ${DIFF} != ""
 	@tmpfile="$$(mktemp dns.XXXXXX)"; \
-	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> \
+	${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} \
 		>"$$tmpfile" 2>&1 \
 	|| cat "$$tmpfile"; \
 	rm "$$tmpfile"
 .else
-	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> | nsupdate -g
+	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> | ${NSUPDATE} ${NSUPDATE_FLAGS}
 .endif
+
+# Delete the czone for this zone when cleaning.
+clean-zone-${zone}:
+	rm -f ${zone:S,/,_,g}.czone
+clean: clean-zone-${zone}
 .endfor
 
+# For easy of use, 'make diff' zones update-zone with DIFF set.
 .PHONY: diff
 
 diff:
-	@${MAKE} -C ${.CURDIR} update-zones DIFF=yes
+	@${MAKE} -C ${.CURDIR} DIFF=yes update-zones
+
+### Unbound configuration files.
 
 unbound-update:
 
