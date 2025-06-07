@@ -1,0 +1,22 @@
+DNS management scripts
+======================
+
+these are the scripts i use to manage my DNS zones and Unbound configuration.
+
+quick start:
+
++ the zones are stored in the 'zones/' directory.
++ each zone is an ERB template.
++ to update all zones, run 'make updates-zones'.
++ to display what would be updated without actually update it,
+  run 'make diff'.
+
+the actual update logic is in the Makefile.
+
+requirements:
+
++ bmake (or pmake)
++ getaddrinfo(1)
++ the 'erb' tool (from the 'erb' Ruby gem)
++ nsupdate
++ nsdiff (https://dotat.at/prog/nsdiff/)
