@@ -1,0 +1,131 @@
+<%# vim:set noet ts=8 sw=8 sts=8:
+
+# Standard unbound.conf for a resolver.
+
+%>
+
+server:
+	module-config: "validator iterator"
+
+	identity: <%= servername %>
+	hide-identity: no
+	hide-version: no
+	hide-http-user-agent: yes
+
+	auto-trust-anchor-file: "<%= confdir %>/secondary/root.key"
+
+	# The local config file configures listen addresses.
+	include: "<%= confdir %>/unbound.conf.local"
+
+	tls-upstream: no
+	pad-responses: yes
+<%#	quic-port: 853 %>
+
+	# Networks that shouldn't be found in public zones.
+	private-address: 169.254.0.0/16
+	private-address: fe80::/10
+	private-address: ::ffff:0:0/96
+	private-address: 64:ff9b::/96
+
+	# General tuning.
+	prefer-ip6: yes
+	rrset-cache-size: 128m
+	unwanted-reply-threshold: 10000
+	minimal-responses: yes
+
+	# Make Unbound be more lenient when resolving long CNAME chains.
+	max-query-restarts: 15
+	max-global-quota: 256
+
+	# Prefetch expiring records, and serve expired records if needed.
+	prefetch: yes
+	prefetch-key: yes
+
+	serve-expired: yes
+	serve-expired-ttl: 30
+	serve-expired-ttl-reset: yes
+	serve-expired-reply-ttl: 30
+	serve-expired-client-timeout: 1800
+	ede: yes
+	ede-serve-expired: yes
+
+<% if defined?(tls) %>
+	tls-service-key: "<%= confdir %>/tls/key.pem"
+	tls-service-pem: "<%= confdir %>/tls/cert.pem"
+
+	tls-use-sni: yes
+	tls-port: 853
+	https-port: 443
+<% end %>
+
+<% if defined?(nat64_prefix) %>
+	do-nat64: yes
+	nat64-prefix: <%= nat64_prefix %>
+<% end %>
+
+<% lfnetworks.split.each do |network| %>
+	private-address: <%= network %>
+	access-control: <%= network %> allow
+<% end %>
+
+	private-domain: sikol.co.uk
+
+# Local zones that we want to serve.  Mark these as both private and insecure
+# otherwise the validator will still try to validate them and (possibly) fail.
+<% local_zones.split.each do |zone| %>
+	private-domain: <%= zone %>
+	domain-insecure: <%= zone %>
+<% end %>
+
+# DN42 zones.  These don't need to be private, but should be insecure for now.
+# Ideally we'd have a way to validate these properly.
+<% dn42_zones.split.each do |zone| %>
+	local-zone: <%= zone %>. nodefault
+	domain-insecure: <%= zone %>.
+<% end %>
+
+remote-control:
+	control-enable: yes
+	control-interface: ::1
+
+	control-port: 8954
+
+	server-key-file: "<%= confdir %>/unbound_server.key"
+	server-cert-file: "<%= confdir %>/unbound_server.pem"
+	control-key-file: "<%= confdir %>/unbound_control.key"
+	control-cert-file: "<%= confdir %>/unbound_control.pem"
+
+# SiKol zones
+auth-zone:
+	name: "lethe.sikol.co.uk"
+	primary: <%= master_addr %>	# <%= master %>
+	fallback-enabled: yes
+	for-downstream: no
+	for-upstream: yes
+	zonefile: /usr/local/etc/unbound/secondary/lethe.sikol.co.uk
+
+auth-zone:
+	name: "_msdcs.lethe.sikol.co.uk"
+	primary: <%= master_addr %>	# <%= master %>
+	fallback-enabled: yes
+	for-downstream: no
+	for-upstream: yes
+	zonefile: /usr/local/etc/unbound/secondary/_msdcs.lethe.sikol.co.uk
+
+# Forward DNS zones
+<% local_zones.split.each do |zone| %>
+auth-zone:
+	name: <%= zone %>
+	primary: <%= master_addr %>	# <%= master %>
+	fallback-enabled: yes
+	for-downstream: no
+	for-upstream: yes
+	zonefile: <%= confdir %>/secondary/<%= zone.gsub('/', '_') %>
+<% end %>
+
+# DN42 zones
+<% dn42_zones.split.each do |zone| %>
+stub-zone:
+	name: <%= zone %>.
+	stub-addr: <%= dn42_master %>
+<% end %>

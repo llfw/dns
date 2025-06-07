@@ -1,0 +1,53 @@
+#! /usr/bin/env ruby
+
+require 'erb'
+require 'optparse'
+
+# Hash to store our -D variables
+template_vars = {}
+
+# Parse command line options
+OptionParser.new do |opts|
+	opts.banner = "Usage: #{$0} [options] <input> <output>"
+	
+	opts.on('-DVAR=VALUE', 'Define template variable') do |definition|
+		var, value = definition.split('=', 2)
+		if var && value
+			template_vars[var] = value
+		else
+			puts "Invalid -D format: #{definition}"
+			exit 1
+		end
+	end
+	
+	opts.on('-h', '--help', 'Show this help') do
+		puts opts
+		exit
+	end
+end.parse!
+
+# Check we have the right number of remaining args
+if ARGV.length != 2
+	puts "Usage: #{$0} [options] <input> <output>"
+	puts "Use -h for help"
+	exit 1
+end
+
+input_file = ARGV[0]
+output_file = ARGV[1]
+
+# Read the template
+template = File.read(input_file)
+
+# Create a binding with our variables
+binding_context = binding
+template_vars.each do |var, value|
+	binding_context.local_variable_set(var.to_sym, value)
+end
+
+# Process with ERB
+erb = ERB.new(template)
+result = erb.result(binding_context)
+
+# Write output
+File.write(output_file, result)
