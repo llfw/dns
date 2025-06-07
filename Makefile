@@ -131,7 +131,7 @@ update-zones: ${zone}
 # The zone itself is not a real file.
 .PHONY: ${zone}
 
-# How to build a processed zone from a file zone.
+# How to build a processed zone from an ERB zonefile.
 ${zone:S,/,_,g}.czone: Makefile ${zone:S,/,_,g}.zone.erb
 	${.CURDIR}/bin/process			\
 		-Dzone=${zone}			\
@@ -157,7 +157,7 @@ clean-zone-${zone}:
 clean: clean-zone-${zone}
 .endfor
 
-# For easy of use, 'make diff' zones update-zone with DIFF set.
+# For easy of use, 'make diff' runs update-zone with DIFF set.
 .PHONY: diff
 
 diff:

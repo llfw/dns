@@ -15,8 +15,8 @@ the actual update logic is in the Makefile.
 
 requirements:
 
-+ bmake (or pmake)
++ bmake (or pmake, not tested)
 + getaddrinfo(1)
-+ the 'erb' tool (from the 'erb' Ruby gem)
-+ nsupdate
-+ nsdiff (https://dotat.at/prog/nsdiff/)
++ ruby with the 'erb' gem (FreeBSD: devel/rubygem-erb)
++ nsupdate (from BIND, FreeBSD: dns/bind-tools)
++ nsdiff (https://dotat.at/prog/nsdiff/, FreeBSD: dns/p5-DNS-nsdiff)
