@@ -142,11 +142,11 @@ ${zone:S,/,_,g}.czone: Makefile ${zone:S,/,_,g}.zone.erb
 # If DIFF is set, just print the diff instead of sending it to nsupdate.
 ${zone}: ${zone:S,/,_,g}.czone
 .if ${DIFF} != ""
-	@tmpfile="$$(mktemp dns.XXXXXX)"; \
-	${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} \
-		>"$$tmpfile" 2>&1 \
-	|| cat "$$tmpfile"; \
-	rm "$$tmpfile"
+	@if ! ${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} >/dev/null 2>&1; then \
+		tmpfile="$$(mktemp dns.XXXXXX)"; \
+		${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} || true; \
+		rm "$$tmpfile"; \
+	fi
 .else
 	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> | ${NSUPDATE} ${NSUPDATE_FLAGS}
 .endif
