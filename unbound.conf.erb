@@ -102,7 +102,7 @@ auth-zone:
 	fallback-enabled: yes
 	for-downstream: no
 	for-upstream: yes
-	zonefile: /usr/local/etc/unbound/secondary/lethe.sikol.co.uk
+	zonefile: <%= confdir %>/secondary/lethe.sikol.co.uk
 
 auth-zone:
 	name: "_msdcs.lethe.sikol.co.uk"
@@ -110,9 +110,9 @@ auth-zone:
 	fallback-enabled: yes
 	for-downstream: no
 	for-upstream: yes
-	zonefile: /usr/local/etc/unbound/secondary/_msdcs.lethe.sikol.co.uk
+	zonefile: <%= confdir %>/secondary/_msdcs.lethe.sikol.co.uk
 
-# Forward DNS zones
+# Local internet DNS zones
 <% local_zones.split.each do |zone| %>
 auth-zone:
 	name: <%= zone %>
