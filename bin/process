@@ -3,13 +3,55 @@
 require 'erb'
 require 'optparse'
 
+def v6rev(input)
+	# Parse the input to separate address and netmask
+	address, netmask = input.split('/')
+	netmask = netmask.to_i
+
+	# Calculate how many bits we actually have (128 - missing bits)
+	remaining_bits = 128 - netmask
+	remaining_groups = remaining_bits / 16
+
+	# Expand the partial address within the context of just the remaining bits
+	expanded_suffix = expand_ipv6_suffix(address, remaining_groups)
+
+	# Convert to hex string and get nibbles
+	hex_string = expanded_suffix.gsub(':', '')
+
+	# Split into individual nibbles and reverse for PTR format
+	nibbles = hex_string.chars.reverse
+
+	# Join with dots
+	nibbles.join('.')
+end
+
+def expand_ipv6_suffix(address, total_groups)
+	# Handle :: expansion within the context of just our suffix
+	if address.include?('::')
+		parts = address.split('::')
+		left_parts = parts[0].empty? ? [] : parts[0].split(':')
+		right_parts = parts[1].empty? ? [] : parts[1].split(':')
+
+		# Calculate how many zero groups we need
+		missing_groups = total_groups - left_parts.length - right_parts.length
+		zero_groups = ['0000'] * missing_groups
+
+		all_parts = left_parts + zero_groups + right_parts
+	else
+		all_parts = address.split(':')
+	end
+
+	# Pad each part to 4 digits
+	all_parts.map { |part| part.rjust(4, '0') }.join(':')
+end
+
 # Hash to store our -D variables
 template_vars = {}
 
 # Parse command line options
 OptionParser.new do |opts|
 	opts.banner = "Usage: #{$0} [options] <input> <output>"
-	
+
 	opts.on('-DVAR=VALUE', 'Define template variable') do |definition|
 		var, value = definition.split('=', 2)
 		if var && value
@@ -19,7 +61,7 @@ OptionParser.new do |opts|
 			exit 1
 		end
 	end
-	
+
 	opts.on('-h', '--help', 'Show this help') do
 		puts opts
 		exit

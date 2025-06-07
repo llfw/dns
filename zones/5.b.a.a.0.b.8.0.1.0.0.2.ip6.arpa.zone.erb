@@ -1,4 +1,4 @@
-; vim:set ft=eruby.bindzone sw=8 ts=8 sts=8:
+; vim:set ft=eruby.bindzone sw=8 ts=8 sts=8 noet:
 
 $TTL <%= ttl %>
 $ORIGIN <%= zone %>.
@@ -19,40 +19,36 @@ $ORIGIN <%= zone %>.
 	TXT	"v=spf1 -all"
 
 ; willow
-8.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR willow.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0	PTR ng0.willow.eden.le-fay.org.
-0.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.0.0	PTR nat-out-v6-willow.inet.le-fay.org.
-e.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0.0.0	PTR willow.eden.le-fay.org.
-2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.3	PTR ix0-3004.willow.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.E	PTR wg0.willow.eden.le-fay.org.
+<%= v6rev('4::8/48') %>			PTR willow.eden.le-fay.org.
+<%= v6rev('1::1/48') %>			PTR ng0.willow.eden.le-fay.org.
+<%= v6rev('3004::2/48') %>		PTR ix0-3004.willow.eden.le-fay.org.
 
 ; Hosts
-3.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR witch.le-fay.org.
-4.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR turnera.eden.le-fay.org.
-5.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR hemlock.eden.le-fay.org.
-0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.4.c	PTR ilythia.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.4.c	PTR ragweed.le-fay.org.
-9.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR fuchsia.eden.le-fay.org.
-6.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR freebsd15.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0	PTR uk-aai-1.le-fay.org.
+<%= v6rev('4::9/48') %>			PTR fuchsia.eden.le-fay.org.
+<%= v6rev('100::1/48') %>		PTR uk-aai-1.le-fay.org.
+<%= v6rev('c401::1:3/48') %>		PTR witch.le-fay.org.
+<%= v6rev('c401::1:4/48') %>		PTR turnera.eden.le-fay.org.
+<%= v6rev('c401::1:5/48') %>		PTR hemlock.eden.le-fay.org.
+<%= v6rev('c401::1:6/48') %>		PTR freebsd15.eden.le-fay.org.
+<%= v6rev('c401:1::1/48') %>		PTR ragweed.le-fay.org.
+<%= v6rev('c401:1::2/48') %>		PTR ilythia.le-fay.org.
 
 ; Network devices
-7.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR core-1.inet.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR vlan401.core-1.inet.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.4.c	PTR vlan402.core-1.inet.eden.le-fay.org.
-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.3	PTR te1.core-1.inet.eden.le-fay.org.
-7.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-2.inet.eden.le-fay.org.
-8.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-3.inet.eden.le-fay.org.
-9.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-4.inet.eden.le-fay.org.
-1.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-1.le-fay.org.
-2.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-2.le-fay.org.
-3.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-3.le-fay.org.
-4.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-4.le-fay.org.
-5.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-5.le-fay.org.
-6.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR eden-access-6.le-fay.org.
+<%= v6rev('4::7/48') %>			PTR eden-core-1.le-fay.org.
+<%= v6rev('c401::1/48') %>		PTR vl401.eden-core-1.le-fay.org.
+<%= v6rev('c402::1/48') %>		PTR vl402.eden-core-1.le-fay.org.
+<%= v6rev('3004::1/48') %>		PTR te1.eden-core-1.le-fay.org.
+<%= v6rev('c401::2:7/48') %>		PTR eden-core-2.le-fay.org.
+<%= v6rev('c401::2:8/48') %>		PTR eden-core-3.le-fay.org.
+<%= v6rev('c401::2:9/48') %>		PTR eden-core-4.le-fay.org.
+<%= v6rev('c401::2:1/48') %>		PTR eden-access-1.le-fay.org.
+<%= v6rev('c401::2:2/48') %>		PTR eden-access-2.le-fay.org.
+<%= v6rev('c401::2:3/48') %>		PTR eden-access-3.le-fay.org.
+<%= v6rev('c401::2:4/48') %>		PTR eden-access-4.le-fay.org.
+<%= v6rev('c401::2:5/48') %>		PTR eden-access-5.le-fay.org.
+<%= v6rev('c401::2:6/48') %>		PTR eden-access-6.le-fay.org.
 
 ; Misc
-5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0.0.0	PTR c1.i.lfns.org.uk.
 0.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR eris.lethe.sikol.co.uk.
 1.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR charon.lethe.sikol.co.uk.
 2.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR tartarus.lethe.sikol.co.uk.
