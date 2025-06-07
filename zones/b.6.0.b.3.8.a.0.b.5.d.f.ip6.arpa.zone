@@ -1,0 +1,32 @@
+$TTL 1h
+$ORIGIN b.6.0.b.3.8.a.0.b.5.d.f.ip6.arpa.
+
+@	SOA hemlock.eden.le-fay.org. hostmaster.le-fay.org. (
+		1	1h	5m	8w	3m
+	;	serial	refresh	retry	expire	minimum
+	)
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+
+	NS	a.ns.le-fay.dn42.
+	NS	b.ns.le-fay.dn42.
+	NS	c.ns.le-fay.dn42.
+
+1.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR amaranth.eden.le-fay.dn42.
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0	PTR yarrow.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0	PTR thyme.lon.uk.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.0	PTR uk-aai-1.le-fay.dn42.
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.0	PTR willow.eden.le-fay.dn42.
+3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.0	PTR core-1.inet.eden.le-fay.dn42.
+4.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.0	PTR nat-out-v6-willow.inet.eden.le-fay.dn42.
+5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.0	PTR fuchsia.eden.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.6.0	PTR vlan401.core-1.inet.eden.le-fay.dn42.
+3.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.6.0	PTR witch.eden.le-fay.dn42.
+4.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.6.0	PTR turnera.eden.le-fay.dn42.
+5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.6.0	PTR hemlock.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.0	PTR ix0-3004.willow.eden.le-fay.dn42.
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f.6.0	PTR te1.core-1.inet.eden.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.7.0	PTR rose.lon.uk.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.0	PTR uk-jmp-1.le-fay.dn42.
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.0	PTR amaranth.eden.le-fay.dn42.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.f.f	PTR resolver.le-fay.dn42.

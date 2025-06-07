@@ -1,0 +1,15 @@
+$TTL 1h
+$ORIGIN 5.1.0.4.8.a.b.0.1.0.0.2.ip6.arpa.
+
+@	SOA hemlock.eden.le-fay.org. hostmaster.le-fay.org. (
+		1	1h	5m	8w	3m
+	;	serial	refresh	retry	expire	minimum
+	)
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+
+	NS	ns1.le-fay.org.
+	NS	ns2.le-fay.org.
+	NS	ns3.le-fay.org.
+
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0	PTR amaranth.le-fay.org.

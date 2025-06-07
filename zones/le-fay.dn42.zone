@@ -1,0 +1,64 @@
+$TTL 1h
+$ORIGIN le-fay.dn42.
+
+@	SOA	hemlock.eden.le-fay.org. hostmaster.le-fay.dn42. (
+		1	; serial
+		1h	; refresh
+		5m	; retry
+		8w	; expire
+		3m	; minimum
+	)
+
+	NS	a.ns.le-fay.dn42.
+	NS	b.ns.le-fay.dn42.
+	NS	c.ns.le-fay.dn42.
+
+	MX	10 smtp
+
+	TXT	"v=spf1 ip6:fd5b:a83:b06b:10::4 ~all"
+
+; Services
+a.ns		AAAA	fd5b:a83:b06b:600::5
+b.ns		AAAA	fd5b:a83:b06b:300::2
+c.ns		AAAA	fd5b:a83:b06b:800::2
+
+www		CNAME	fuchsia
+smtp		AAAA	fd5b:a83:b06b:600::5
+resolver	AAAA	fd5b:a83:b06b:ff00::1
+
+ntp		AAAA	fd5b:a83:b06b:100::1
+		AAAA	fd5b:a83:b06b:500::1
+		AAAA	fd5b:a83:b06b:601::5
+a.ntp		AAAA	fd5b:a83:b06b:100::1
+		A	172.23.76.0
+b.ntp		AAAA	fd5b:a83:b06b:601::5
+		A	172.23.76.6
+c.ntp		AAAA	fd5b:a83:b06b:500::1
+
+; willow
+willow.eden			AAAA	fd5b:a83:b06b:600::2
+ix0-3004.willow.eden		AAAA	fd5b:a83:b06b:6ff::1
+nat-out-v6-willow.inet.eden	AAAA	fd5b:a83:b06b:600::4
+
+; Hosts
+amaranth.eden			AAAA	fd5b:a83:b06b:800::2
+hemlock				AAAA	fd5b:a83:b06b:601::5
+turnera.eden			AAAA	fd5b:a83:b06b:601::4
+fuchsia				AAAA	fd5b:a83:b06b:600::5
+fuchsia.eden			CNAME	fuchsia
+yarrow				AAAA	fd5b:a83:b06b:300::2
+witch.eden			AAAA	fd5b:a83:b06b:601::3
+rose.lon.uk			AAAA	fd5b:a83:b06b:700::1
+thyme.lon.uk			AAAA	fd5b:a83:b06b:400::1
+uk-aai-1			AAAA	fd5b:a83:b06b:600::1
+uk-jmp-2			CNAME	thyme.lon.uk.le-fay.dn42.
+uk-myb-2			CNAME	rose.lon.uk.le-fay.dn42.
+
+rose.lon.uk.ipv4		A	172.23.76.2
+thyme.lon.uk.ipv4		A 172.23.76.4
+uk-aai-1.ipv4			A	172.23.76.8
+
+; Network devices
+core-1.inet.eden		AAAA	fd5b:a83:b06b:600::3
+te1.core-1.inet.eden		AAAA	fd5b:a83:b06b:6ff::2
+vlan401.core-1.inet.eden	AAAA	fd5b:a83:b06b:601::1

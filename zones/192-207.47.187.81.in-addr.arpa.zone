@@ -1,0 +1,25 @@
+$TTL 1h
+$ORIGIN 192-207.47.187.81.in-addr.arpa.
+
+@	SOA hemlock.eden.le-fay.org. hostmaster.le-fay.org. (
+		1	1h	5m	8w	3m
+	;	serial	refresh	retry	expire	minimum
+	)
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+
+	NS	ns1.le-fay.org.
+	NS	ns2.le-fay.org.
+	NS	ns3.le-fay.org.
+
+192	PTR	ng0.willow.eden.le-fay.org.
+193	PTR	nat-out-v4-willow.inet.eden.le-fay.org.
+195	PTR	fuchsia.eden.le-fay.org.
+196	PTR	willow.eden.le-fay.org.
+197	PTR	core-1.inet.eden.le-fay.org.
+200	PTR	wg-uk-myb-1.uk-aai-1.le-fay.org.
+201	PTR	wg-uk-aai-1.uk-myb-1.le-fay.org.
+202	PTR	ep-willow.uk-aai-1.le-fay.org.
+203	PTR	ep-uk-aai-1.willow.eden.le-fay.org.
+205	PTR	ix0-3004.willow.eden.le-fay.org.
+206	PTR	te1.core-1.inet.eden.le-fay.org.

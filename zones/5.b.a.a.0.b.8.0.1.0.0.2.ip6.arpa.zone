@@ -1,0 +1,45 @@
+$TTL 1h
+$ORIGIN 5.b.a.a.0.b.8.0.1.0.0.2.ip6.arpa.
+
+@	SOA hemlock.eden.le-fay.org. hostmaster.le-fay.org. (
+		1	1h	5m	8w	3m
+	;	serial	refresh	retry	expire	minimum
+	)
+
+	CAA	128 issue "letsencrypt.org;validationmethods=dns-01"
+
+	NS	ns1.le-fay.org.
+	NS	ns2.le-fay.org.
+	NS	ns3.le-fay.org.
+
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0	PTR ng0.willow.eden.le-fay.org.
+0.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.0.0	PTR nat-out-v6-willow.inet.le-fay.org.
+5.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0.0.0	PTR c1.i.lfns.org.uk.
+e.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.3.0.0.0	PTR willow.eden.le-fay.org.
+7.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR core-1.inet.eden.le-fay.org.
+8.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR willow.eden.le-fay.org.
+9.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.0	PTR fuchsia.eden.le-fay.org.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0	PTR uk-aai-1.le-fay.org.
+0.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR eris.lethe.sikol.co.uk.
+1.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR charon.lethe.sikol.co.uk.
+2.5.0.0.0.0.0.0.0.0.0.0.3.0.0.0.6.0.1.0	PTR tartarus.lethe.sikol.co.uk.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.3	PTR te1.core-1.inet.eden.le-fay.org.
+2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.0.0.3	PTR ix0-3004.willow.eden.le-fay.org.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR vlan401.core-1.inet.eden.le-fay.org.
+3.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR witch.eden.le-fay.org.
+4.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR turnera.eden.le-fay.org.
+5.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR hemlock.eden.le-fay.org.
+6.0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR freebsd15.eden.le-fay.org.
+1.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-1.inet.eden.le-fay.org.
+2.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-2.inet.eden.le-fay.org.
+3.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-3.inet.eden.le-fay.org.
+4.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-4.inet.eden.le-fay.org.
+5.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-5.inet.eden.le-fay.org.
+6.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR access-6.inet.eden.le-fay.org.
+7.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-2.inet.eden.le-fay.org.
+8.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-3.inet.eden.le-fay.org.
+9.0.0.0.2.0.0.0.0.0.0.0.0.0.0.0.1.0.4.c	PTR core-4.inet.eden.le-fay.org.
+0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.4.c	PTR ilythia.le-fay.org.
+1.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0.1.0.4.c	PTR ragweed.le-fay.org.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.2.0.4.c	PTR vlan402.core-1.inet.eden.le-fay.org.
+1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.E	PTR wg0.willow.eden.le-fay.org.
