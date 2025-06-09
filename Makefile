@@ -90,9 +90,16 @@ LFNETWORKS= \
 	10.0.0.0/8 \
 	198.18.0.0/15
 
+# All servers which run Unbound.
 UNBOUND_SERVERS= \
 	witch.le-fay.org \
-	turnera.le-fay.org
+	turnera.le-fay.org \
+	hemlock.eden.le-fay.org
+
+# Forwarder addresses for Unbound forwarders.
+UNBOUND_FORWARDERS= \
+	2001:8b0:aab5:c401::1:3 \
+	2001:8b0:aab5:c401::1:4
 
 UNBOUND_PROCESS_FLAGS= \
 	-Dconfdir=/usr/local/etc/unbound \
@@ -102,6 +109,7 @@ UNBOUND_PROCESS_FLAGS= \
 	-Dlocal_zones="${ZONES}" \
 	-Ddn42_zones="${DN42_ZONES}" \
 	-Ddn42_master="${DN42_MASTER}"
+UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dforwarder=yes
 UNBOUND_PROCESS_FLAGS.witch.le-fay.org=		-Dtls=yes
 UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
 
