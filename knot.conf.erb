@@ -1,0 +1,80 @@
+<%# vim:set noet ts=2 sw=2 sts=2:
+  # Standard knot.conf for a resolver.
+ %>
+
+server:
+  rundir: "/var/run/knot"
+  user: knot:knot
+  automatic-acl: off
+  version: ""
+  listen: [<%= listen.split.join(", ") %>]
+
+log:
+- target: syslog
+  any: info
+
+database:
+  storage: "/var/db/knot"
+
+remote:
+- id: master
+  address: <%= master_addr %>
+
+acl:
+- id: allow-master
+  remote: master
+  action: notify
+
+# Response Rate Limiting
+mod-rrl:
+- id: default
+  rate-limit: 50
+  slip: 2
+
+# Synthetic reverse DNS
+mod-synthrecord:
+- id: v6-forward
+  type: forward
+  network: 2001:8b0:aab5:c000::/52
+
+- id: v6-forward-dn42
+  type: forward
+  network: fd5b:a83:b06b:c000::/52
+
+- id: v6-reverse
+  type: reverse
+  origin: dyn.le-fay.org
+  network: 2001:8b0:aab5:c000::/52
+  reverse-short: off
+
+- id: v6-reverse-dn42
+  type: reverse
+  origin: dyn.le-fay.dn42
+  network: fd5b:a83:b06b:c000::/52
+  reverse-short: off
+
+template:
+- id: default
+  storage: "/var/db/knot"
+  file: "%s.zone"
+  master: master
+  global-module: [mod-cookies, mod-rrl/default]
+  acl: [allow-master]
+
+zone:
+<% zones.split.each do |zone| -%>
+- domain: <%= zone %>
+<%# This should really be done in Makefile. -%>
+<%   if zone == 'le-fay.org' -%>
+  module: mod-synthrecord/v6-forward
+<%   end -%>
+<%   if zone == '5.b.a.a.0.b.8.0.1.0.0.2.ip6.arpa' -%>
+  module: mod-synthrecord/v6-reverse
+<%   end -%>
+<%   if zone == 'le-fay.dn42' -%>
+  module: mod-synthrecord/v6-forward-dn42
+<%   end -%>
+<%   if zone == 'b.6.0.b.3.8.a.0.b.5.d.f.ip6.arpa' -%>
+  module: mod-synthrecord/v6-reverse-dn42
+<%   end -%>
+<% end -%>

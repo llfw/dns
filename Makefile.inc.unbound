@@ -1,0 +1,34 @@
+# This source code is released into the public domain.
+
+### Unbound configuration files.
+
+unbound:
+.PHONY: unbound
+
+.for server in ${UNBOUND_SERVERS}
+
+unbound.conf.${server}: unbound.conf.erb
+	${.CURDIR}/bin/process				\
+		-Dservername=${server}			\
+		${UNBOUND_PROCESS_FLAGS}		\
+		${UNBOUND_PROCESS_FLAGS.${server}}	\
+		$> $@
+
+unbound: unbound-${server}
+unbound-${server}: unbound.conf.${server}
+	@echo "updating ${server}"
+	@echo ""
+	@echo "===> updating ${server}"
+	@echo ""
+	scp -q $> root@${server}:${UNBOUND_CONF_FILE}
+	ssh root@${server} service unbound restart
+
+.PHONY: unbound-${server}
+
+clean: clean-unbound-${server}
+clean-unbound-${server}:
+	rm -f ${.OBJDIR}/unbound.conf.${server}
+.PHONY: clean-unbound-${server}
+
+.endfor
+

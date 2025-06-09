@@ -88,7 +88,7 @@ template_vars.each do |var, value|
 end
 
 # Process with ERB
-erb = ERB.new(template)
+erb = ERB.new(template, trim_mode: '-')
 result = erb.result(binding_context)
 
 # Write output

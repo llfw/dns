@@ -1,7 +1,13 @@
+# This source code is released into the public domain.
+#
+# Primary makefile for DNS management.
+
+
 ### Our local master server.
 MASTER=		hemlock.eden.le-fay.org
 MASTER_ADDR!=	getaddrinfo -f inet6 -p tcp -t stream ${MASTER} \
 			| awk '{ print $$4 }'
+
 
 ### Default SOA values.
 # Serial is always 1; nsdiff handles this magically.
@@ -19,14 +25,10 @@ NAMESERVERS=	ns1.le-fay.org \
 		ns2.le-fay.org \
 		ns3.le-fay.org
 
+
 ### The DN42 master server.
 DN42_MASTER=	fd42:4242:2601:ac53::1
 
-NSUPDATE?=	nsupdate
-NSUPDATE_FLAGS?=-g
-NSDIFF?=	nsdiff
-NSDIFFFLAGS?=	-Sserial -s ${MASTER}
-DIFF?=
 
 # The zones we serve.
 ZONES=	le-fay.org \
@@ -44,6 +46,7 @@ ZONES=	le-fay.org \
 	192-207.47.187.81.in-addr.arpa \
 	0/26.76.23.172.in-addr.arpa \
 	18.198.in-addr.arpa
+
 
 # Template variables for primary zones.
 ZONE_PROCESS_FLAGS= \
@@ -92,9 +95,13 @@ LFNETWORKS= \
 
 # All servers which run Unbound.
 UNBOUND_SERVERS= \
-	witch.le-fay.org \
-	turnera.le-fay.org \
 	hemlock.eden.le-fay.org
+#	witch.le-fay.org \
+#	turnera.le-fay.org \
+#	hemlock.eden.le-fay.org
+
+UNBOUND_CONF_DIR=/usr/local/etc/unbound
+UNBOUND_CONF_FILE=${UNBOUND_CONF_DIR}/unbound.conf
 
 # Forwarder addresses for Unbound forwarders.
 UNBOUND_FORWARDERS= \
@@ -113,79 +120,63 @@ UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dforwarder=yes
 UNBOUND_PROCESS_FLAGS.witch.le-fay.org=		-Dtls=yes
 UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
 
+#######################################################################
+# Knot configuration for primary servers.
+#
+
+KNOT_CONF_DIR=/usr/local/etc/knot
+KNOT_CONF_FILE=${KNOT_CONF_DIR}/knot.conf
+
+# Global options.
+KNOT_SERVERS?= \
+	yarrow.le-fay.org \
+	amaranth.le-fay.org \
+	fuchsia.eden.le-fay.org
+
+KNOT_PROCESS_FLAGS= \
+	-Dmaster=${MASTER} \
+	-Dmaster_addr=${MASTER_ADDR} \
+	-Dzones="${ZONES}"
+
+# Server-specific options.
+KNOT_LISTEN.yarrow.le-fay.org= \
+	2a00:1098:6b:100::2@53 \
+	176.126.243.79@53
+
+KNOT_LISTEN.amaranth.le-fay.org= \
+	2001:ba8:4015:100::2@53 \
+	185.73.44.74@53
+
+KNOT_LISTEN.fuchsia.eden.le-fay.org= \
+	2001:8b0:aab5:4::9@53 \
+	81.187.47.195@53 \
+	fd5b:a83:b06b:4::9@53 \
+	fd5b:a83:b06b:600::5@53
+
+#######################################################################
 # The default target doesn't do anything.
+#
+
 all:
 	@echo "Please specify a target:"
 	@echo "  make diff           show diff between zone files and online zone"
 	@echo "  make update-zones   update online zones"
-	@echo "  make unbound-update build and install Unbound configs"
+	@echo "  make unbound        build and install Unbound configs"
+	@echo "  make knot           build and install Knot configs"
+.PHONY: all
 
-# Define the clean target to do nothing; we add dependencies to this below.
+# Individual targets add dependencies to clean.
 clean:
+.PHONY: clean
+
+.include "Makefile.inc.knot"
+.include "Makefile.inc.unbound"
+.include "Makefile.inc.zones"
+
 
 # File paths.
-ZONEDIR=${.CURDIR}/zones
 .PATH: ${ZONEDIR}
 .OBJDIR: ${.CURDIR}/build
-.SUFFIXES: .zone.erb .czone
-.PHONY: all update-zones clean
 
-### Define targets for primary zones.
-
-.for zone in ${ZONES}
-# Update this zone when running update-zones.
-update-zones: ${zone}
-
-# The zone itself is not a real file.
-.PHONY: ${zone}
-
-# How to build a processed zone from an ERB zonefile.
-${zone:S,/,_,g}.czone: Makefile ${zone:S,/,_,g}.zone.erb
-	${.CURDIR}/bin/process			\
-		-Dzone=${zone}			\
-		${ZONE_PROCESS_FLAGS}		\
-		${ZONEDIR}/${zone:S,/,_,g}.zone.erb $@
-
-# Take the built .czone file and send it to nsdiff.
-# If DIFF is set, just print the diff instead of sending it to nsupdate.
-${zone}: ${zone:S,/,_,g}.czone
-.if ${DIFF} != ""
-	@if ! ${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} >/dev/null 2>&1; then \
-		tmpfile="$$(mktemp dns.XXXXXX)"; \
-		${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} || true; \
-		rm "$$tmpfile"; \
-	fi
-.else
-	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> | ${NSUPDATE} ${NSUPDATE_FLAGS}
-.endif
-
-# Delete the czone for this zone when cleaning.
-clean-zone-${zone}:
-	rm -f ${zone:S,/,_,g}.czone
-clean: clean-zone-${zone}
-.endfor
-
-# For easy of use, 'make diff' runs update-zone with DIFF set.
-.PHONY: diff
-
-diff:
-	@${MAKE} -C ${.CURDIR} DIFF=yes update-zones
-
-### Unbound configuration files.
-
-unbound-update:
-
-.for server in ${UNBOUND_SERVERS}
-update-unbound: update-unbound-${server}
-update-unbound-${server}: unbound.conf.${server}
-	@echo "updating ${server}"
-unbound.conf.${server}: unbound.conf.erb
-	${.CURDIR}/bin/process				\
-		-Dservername=${server}			\
-		${UNBOUND_PROCESS_FLAGS}		\
-		${UNBOUND_PROCESS_FLAGS.${server}}	\
-		$> $@
-clean: clean-unbound-${server}
-clean-unbound-${server}:
-	rm -f ${.OBJDIR}/unbound.conf.${server}
-.endfor
+BINDIR=		${.CURDIR}/bin
+PROCESS=	${BINDIR}/process

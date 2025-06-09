@@ -1,0 +1,53 @@
+# This source code is released into the public domain.
+
+DIFF?=
+ZONEDIR=	${.CURDIR}/zones
+NSUPDATE?=	nsupdate
+NSUPDATE_FLAGS?=-g
+NSDIFF?=	nsdiff
+NSDIFFFLAGS?=	-Sserial -s ${MASTER}
+
+.SUFFIXES: .zone.erb .czone
+
+update-zones:
+.PHONY: update-zones
+
+.for zone in ${ZONES}
+
+# Update this zone when running update-zones.
+update-zones: ${zone}
+
+# How to build a processed zone from an ERB zonefile.
+${zone:S,/,_,g}.czone: Makefile ${zone:S,/,_,g}.zone.erb
+	${PROCESS}				\
+		-Dzone=${zone}			\
+		${ZONE_PROCESS_FLAGS}		\
+		${ZONEDIR}/${zone:S,/,_,g}.zone.erb $@
+
+# Take the built .czone file and send it to nsdiff.
+# If DIFF is set, just print the diff instead of sending it to nsupdate.
+${zone}: ${zone:S,/,_,g}.czone
+.if ${DIFF} != ""
+	@if ! ${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} >/dev/null 2>&1; then \
+		tmpfile="$$(mktemp dns.XXXXXX)"; \
+		${NSDIFF} ${NSDIFFFLAGS} ${zone} ${.ALLSRC} || true; \
+		rm "$$tmpfile"; \
+	fi
+.else
+	${NSDIFF} ${NSDIFFFLAGS} ${zone} $> | ${NSUPDATE} ${NSUPDATE_FLAGS}
+.endif
+
+.PHONY: ${zone}
+
+# Delete the czone for this zone when cleaning.
+clean-zone-${zone}:
+	rm -f ${zone:S,/,_,g}.czone
+.PHONY: Clean-zone-${zone}
+clean: clean-zone-${zone}
+.endfor
+
+# For easy of use, 'make diff' runs update-zone with DIFF set.
+diff:
+	@${MAKE} -C ${.CURDIR} DIFF=yes update-zones
+.PHONY: diff
+

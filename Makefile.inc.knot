@@ -1,0 +1,34 @@
+# This source code is released into the public domain.
+#
+# Make targets for Knot.
+
+.PHONY: knot
+
+knot:
+
+.for server in ${KNOT_SERVERS}
+
+knot.conf.${server}: knot.conf.erb
+	${.CURDIR}/bin/process				\
+		${KNOT_PROCESS_FLAGS}			\
+		-Dlisten="${KNOT_LISTEN.${server}}"	\
+		${KNOT_PROCESS_FLAGS.${server}}		\
+		$> $@
+
+knot: knot-${server}
+knot-${server}: knot.conf.${server}
+	@echo ""
+	@echo "===> updating ${server}"
+	@echo ""
+	scp -q $> root@${server}:${KNOT_CONF_DIR}
+	ssh root@${server} service knot restart
+
+.PHONY: update-knot-${server}
+
+clean: clean-knot-${server}
+clean-knot-${server}:
+	rm -f ${.OBJDIR}/knot.conf.${server}
+.PHONY: clean-knot-${server}
+
+.endfor
+
