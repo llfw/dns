@@ -47,36 +47,14 @@ ZONES=	le-fay.org \
 	0/26.76.23.172.in-addr.arpa \
 	18.198.in-addr.arpa
 
-
-# Template variables for primary zones.
-ZONE_PROCESS_FLAGS= \
-	-Dttl=${TTL} \
-	-Dnameservers="${NAMESERVERS}" \
-	-Dsoa_mname=${SOA_MNAME} \
-	-Dsoa_rname=${SOA_RNAME} \
-	-Dsoa_serial=${SOA_SERIAL} \
-	-Dsoa_refresh=${SOA_REFRESH} \
-	-Dsoa_retry=${SOA_RETRY} \
-	-Dsoa_expire=${SOA_EXPIRE} \
-	-Dsoa_minimum=${SOA_MINIMUM}
-
-
 # These zones are used for DN42.
 DN42_ZONES= \
 	dn42 \
 	d.f.ip6.arpa \
-	20.172.in-addr.arpa \
-	21.172.in-addr.arpa \
-	22.172.in-addr.arpa \
-	23.172.in-addr.arpa \
-	24.172.in-addr.arpa \
-	25.172.in-addr.arpa \
-	26.172.in-addr.arpa \
-	27.172.in-addr.arpa \
-	28.172.in-addr.arpa \
-	29.172.in-addr.arpa \
-	30.172.in-addr.arpa \
-	31.172.in-addr.arpa
+	20.172.in-addr.arpa 21.172.in-addr.arpa 22.172.in-addr.arpa \
+	23.172.in-addr.arpa 24.172.in-addr.arpa 25.172.in-addr.arpa \
+	26.172.in-addr.arpa 27.172.in-addr.arpa 28.172.in-addr.arpa \
+	29.172.in-addr.arpa 30.172.in-addr.arpa 31.172.in-addr.arpa
 
 # Our local networks.
 # TODO: Generate these from LDAP.
@@ -101,6 +79,7 @@ LFNETWORKS= \
 UNBOUND_SERVERS?= \
 	hemlock.eden.le-fay.org \
 	fuchsia.eden.le-fay.org \
+	yarrow.le-fay.org \
 	amaranth.le-fay.org \
 	witch.le-fay.org \
 #	turnera.le-fay.org
@@ -115,6 +94,7 @@ UNBOUND_FORWARDERS?= \
 #
 UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dnolocal=yes -Dforwarder=yes
 UNBOUND_PROCESS_FLAGS.amaranth.le-fay.org=	-Dnolocal=yes
+UNBOUND_PROCESS_FLAGS.yarrow.le-fay.org=	-Dnolocal=yes
 UNBOUND_PROCESS_FLAGS.witch.le-fay.org=		-Dtls=yes
 UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
 

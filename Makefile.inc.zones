@@ -7,6 +7,18 @@ NSUPDATE_FLAGS?=-g
 NSDIFF?=	nsdiff
 NSDIFFFLAGS?=	-Sserial -s ${MASTER}
 
+# Template variables for primary zones.
+ZONE_PROCESS_FLAGS= \
+	-Dttl=${TTL} \
+	-Dnameservers="${NAMESERVERS}" \
+	-Dsoa_mname=${SOA_MNAME} \
+	-Dsoa_rname=${SOA_RNAME} \
+	-Dsoa_serial=${SOA_SERIAL} \
+	-Dsoa_refresh=${SOA_REFRESH} \
+	-Dsoa_retry=${SOA_RETRY} \
+	-Dsoa_expire=${SOA_EXPIRE} \
+	-Dsoa_minimum=${SOA_MINIMUM}
+
 .SUFFIXES: .zone.erb .czone
 
 update-zones:
