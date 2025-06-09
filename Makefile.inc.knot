@@ -20,7 +20,7 @@ knot-${server}: knot.conf.${server}
 	@echo ""
 	@echo "===> updating ${server}"
 	@echo ""
-	scp -q $> root@${server}:${KNOT_CONF_DIR}
+	scp -q $> root@${server}:${KNOT_CONF_FILE}
 	ssh root@${server} service knot restart
 
 .PHONY: update-knot-${server}
