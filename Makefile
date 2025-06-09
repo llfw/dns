@@ -93,39 +93,35 @@ LFNETWORKS= \
 	10.0.0.0/8 \
 	198.18.0.0/15
 
-# All servers which run Unbound.
-UNBOUND_SERVERS= \
-	hemlock.eden.le-fay.org
-#	witch.le-fay.org \
-#	turnera.le-fay.org \
-#	hemlock.eden.le-fay.org
 
-UNBOUND_CONF_DIR=/usr/local/etc/unbound
-UNBOUND_CONF_FILE=${UNBOUND_CONF_DIR}/unbound.conf
+#######################################################################
+# Unbound configuration for resolvers.
+
+# All servers which run Unbound.
+UNBOUND_SERVERS?= \
+	hemlock.eden.le-fay.org \
+	fuchsia.eden.le-fay.org \
+	amaranth.le-fay.org \
+	witch.le-fay.org \
+#	turnera.le-fay.org
 
 # Forwarder addresses for Unbound forwarders.
-UNBOUND_FORWARDERS= \
+UNBOUND_FORWARDERS?= \
 	2001:8b0:aab5:c401::1:3 \
 	2001:8b0:aab5:c401::1:4
 
-UNBOUND_PROCESS_FLAGS= \
-	-Dconfdir=/usr/local/etc/unbound \
-	-Dmaster="${MASTER}" \
-	-Dmaster_addr="${MASTER_ADDR}" \
-	-Dlfnetworks="${LFNETWORKS}" \
-	-Dlocal_zones="${ZONES}" \
-	-Ddn42_zones="${DN42_ZONES}" \
-	-Ddn42_master="${DN42_MASTER}"
-UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dforwarder=yes
+# -Dforwarder means this server forwards queries to ${UNBOUND_FORWARDERS}.
+# -Dnolocal means this server doesn't have a copy of our local zones.
+#
+UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dnolocal=yes -Dforwarder=yes
+UNBOUND_PROCESS_FLAGS.amaranth.le-fay.org=	-Dnolocal=yes
 UNBOUND_PROCESS_FLAGS.witch.le-fay.org=		-Dtls=yes
 UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
+
 
 #######################################################################
 # Knot configuration for primary servers.
 #
-
-KNOT_CONF_DIR=/usr/local/etc/knot
-KNOT_CONF_FILE=${KNOT_CONF_DIR}/knot.conf
 
 # Global options.
 KNOT_SERVERS?= \
@@ -153,6 +149,7 @@ KNOT_LISTEN.fuchsia.eden.le-fay.org= \
 	fd5b:a83:b06b:4::9@53 \
 	fd5b:a83:b06b:600::5@53
 
+
 #######################################################################
 # The default target doesn't do anything.
 #
@@ -172,7 +169,6 @@ clean:
 .include "Makefile.inc.knot"
 .include "Makefile.inc.unbound"
 .include "Makefile.inc.zones"
-
 
 # File paths.
 .PATH: ${ZONEDIR}

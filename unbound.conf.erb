@@ -12,30 +12,25 @@ server:
 
 	auto-trust-anchor-file: "<%= confdir %>/secondary/root.key"
 
-<% if defined?(forwarder) %>
-	# Forwarders only listen on localhost.
-	interface: ::1
-	# Only localhost has access.
-	access-control: ::1 allow
-
+<% if defined?(forwarder) -%>
 	# Be more forgiving of broken servers, so that everything doesn't stop
 	# working if the network is down for a bit.
 	infra-keep-probing: yes
 	infra-host-ttl: 60
 	log-servfail: yes
-<% else %>
-	# For resolvers, the local config file configures listen addresses.
+<% end %>
+
+	# The local config file configures listen addresses.
 	include: "<%= confdir %>/unbound.conf.local"
 
 	# Allow access from LF networks.
-<% lfnetworks.split.each do |network| %>
+<% lfnetworks.split.each do |network| -%>
 	access-control: <%= network %> allow
 <% end %>
 
 	# We might want to enable this in the future.
 	#use-caps-for-id: yes
 	#caps-exempt: example.org
-<% end %>
 
 	tls-upstream: no
 	pad-responses: yes
@@ -69,7 +64,7 @@ server:
 	ede: yes
 	ede-serve-expired: yes
 
-<% if defined?(tls) %>
+<% if defined?(tls) -%>
 	tls-service-key: "<%= confdir %>/tls/key.pem"
 	tls-service-pem: "<%= confdir %>/tls/cert.pem"
 
@@ -78,24 +73,28 @@ server:
 	https-port: 443
 <% end %>
 
-<% if defined?(nat64_prefix) %>
+<% if defined?(nat64_prefix) -%>
 	do-nat64: yes
 	nat64-prefix: <%= nat64_prefix %>
 <% end %>
 
 # Private addresses that should not be found in Internet zones.
-<% lfnetworks.split.each do |network| %>
+<% lfnetworks.split.each do |network| -%>
 	private-address: <%= network %>
 <% end %>
 
 	private-domain: sikol.co.uk
 
-# Local zones that we want to serve.  Mark these as both private and insecure
-# otherwise the validator will still try to validate them and (possibly) fail.
-<% local_zones.split.each do |zone| %>
+# Local zones that we want to serve.  Mark these as private so we accept our
+# addresses, and if they're local zones, mark them as insecure so that the
+# resolver doesn't try to validate the DNSSEC chain (which would break DNS
+# without Internet access).
+<% local_zones.split.each do |zone| -%>
 	private-domain: <%= zone %>
+<%   if not defined?(nolocal) -%>
 	domain-insecure: <%= zone %>
-<% end %>
+<%   end -%>
+<% end -%>
 
 # DN42 zones.  These don't need to be private, but should be insecure for now.
 # Ideally we'd have a way to validate these properly.
@@ -119,10 +118,13 @@ remote-control:
 # This server is a forwarder.
 forward-zone:
 	name: "."
-	forward-addr: 2001:8b0:aab5:c401::1:3
-	forward-addr: 2001:8b0:aab5:c401::1:4
+<% forwarders.split.each do |addr| -%>
+	forward-addr: <%= addr %>
+<% end -%>
 	forward-first: yes
-<% else %>
+<% end %>
+
+<% if not defined?(nolocal) %>
 # This server is a resolver, so it wants a local copy of all zones.
 
 # SiKol zones

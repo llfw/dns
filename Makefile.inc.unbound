@@ -1,18 +1,30 @@
 # This source code is released into the public domain.
 
-### Unbound configuration files.
+# Unbound configuration files.
+
+UNBOUND_CONF_DIR?=/usr/local/etc/unbound
+UNBOUND_CONF_FILE?=${UNBOUND_CONF_DIR}/unbound.conf
+UNBOUND_PROCESS_FLAGS?= \
+	-Dconfdir=/usr/local/etc/unbound \
+	-Dmaster="${MASTER}" \
+	-Dmaster_addr="${MASTER_ADDR}" \
+	-Dlfnetworks="${LFNETWORKS}" \
+	-Dlocal_zones="${ZONES}" \
+	-Ddn42_zones="${DN42_ZONES}" \
+	-Ddn42_master="${DN42_MASTER}" \
+	-Dforwarders="${UNBOUND_FORWARDERS}"
 
 unbound:
 .PHONY: unbound
 
 .for server in ${UNBOUND_SERVERS}
 
-unbound.conf.${server}: unbound.conf.erb
+unbound.conf.${server}: Makefile unbound.conf.erb
 	${.CURDIR}/bin/process				\
 		-Dservername=${server}			\
 		${UNBOUND_PROCESS_FLAGS}		\
 		${UNBOUND_PROCESS_FLAGS.${server}}	\
-		$> $@
+		${.CURDIR}/unbound.conf.erb $@
 
 unbound: unbound-${server}
 unbound-${server}: unbound.conf.${server}

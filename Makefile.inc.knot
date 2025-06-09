@@ -2,9 +2,11 @@
 #
 # Make targets for Knot.
 
-.PHONY: knot
+KNOT_CONF_DIR=/usr/local/etc/knot
+KNOT_CONF_FILE=${KNOT_CONF_DIR}/knot.conf
 
 knot:
+.PHONY: knot
 
 .for server in ${KNOT_SERVERS}
 
