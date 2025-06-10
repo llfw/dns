@@ -29,7 +29,6 @@ unbound.conf.${server}: Makefile unbound.conf.erb
 
 unbound: unbound-${server}
 unbound-${server}: unbound.conf.${server}
-	@echo "updating ${server}"
 	@echo ""
 	@echo "===> updating ${server}"
 	@echo ""
