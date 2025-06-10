@@ -101,37 +101,6 @@ UNBOUND_PROCESS_FLAGS.turnera.le-fay.org=	-Dtls=yes
 
 
 #######################################################################
-# Knot configuration for primary servers.
-#
-
-# Global options.
-KNOT_SERVERS?= \
-	yarrow.le-fay.org \
-	amaranth.le-fay.org \
-	fuchsia.eden.le-fay.org
-
-KNOT_PROCESS_FLAGS= \
-	-Dmaster=${MASTER} \
-	-Dmaster_addr=${MASTER_ADDR} \
-	-Dzones="${ZONES}"
-
-# Server-specific options.
-KNOT_LISTEN.yarrow.le-fay.org= \
-	2a00:1098:6b:100::2@53 \
-	176.126.243.79@53
-
-KNOT_LISTEN.amaranth.le-fay.org= \
-	2001:ba8:4015:100::2@53 \
-	185.73.44.74@53
-
-KNOT_LISTEN.fuchsia.eden.le-fay.org= \
-	2001:8b0:aab5:4::9@53 \
-	81.187.47.195@53 \
-	fd5b:a83:b06b:4::9@53 \
-	fd5b:a83:b06b:600::5@53
-
-
-#######################################################################
 # The default target doesn't do anything.
 #
 
@@ -140,14 +109,12 @@ all:
 	@echo "  make diff           show diff between zone files and online zone"
 	@echo "  make update-zones   update online zones"
 	@echo "  make unbound        build and install Unbound configs"
-	@echo "  make knot           build and install Knot configs"
 .PHONY: all
 
 # Individual targets add dependencies to clean.
 clean:
 .PHONY: clean
 
-.include "Makefile.inc.knot"
 .include "Makefile.inc.unbound"
 .include "Makefile.inc.zones"
 
