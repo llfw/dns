@@ -54,6 +54,10 @@ DN42_ZONES= \
 	26.172.in-addr.arpa 27.172.in-addr.arpa 28.172.in-addr.arpa \
 	29.172.in-addr.arpa 30.172.in-addr.arpa 31.172.in-addr.arpa
 
+# These zones are always insecure, because they don't exist on the Internet.
+INSECURE_ZONES= \
+	18.198.in-addr.arpa
+
 # Our local networks.
 # TODO: Generate these from LDAP.
 LFNETWORKS= \

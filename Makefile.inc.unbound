@@ -10,6 +10,7 @@ UNBOUND_PROCESS_FLAGS?= \
 	-Dmaster_addr="${MASTER_ADDR}" \
 	-Dlfnetworks="${LFNETWORKS}" \
 	-Dlocal_zones="${ZONES}" \
+	-Dinsecure_zones="${INSECURE_ZONES}" \
 	-Ddn42_zones="${DN42_ZONES}" \
 	-Ddn42_master="${DN42_MASTER}" \
 	-Dforwarders="${UNBOUND_FORWARDERS}"

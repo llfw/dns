@@ -96,6 +96,11 @@ server:
 <%   end -%>
 <% end -%>
 
+# Zones which are always insecure, because they don't exist on the Internet.
+<% insecure_zones.split.each do |zone| -%>
+	domain-insecure: <%= zone %>
+<% end -%>
+
 # DN42 zones.  These don't need to be private, but should be insecure for now.
 # Ideally we'd have a way to validate these properly.
 <% dn42_zones.split.each do |zone| %>
