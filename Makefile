@@ -4,7 +4,7 @@
 
 
 ### Our local master server.
-MASTER=		hemlock.eden.le-fay.org
+MASTER=		hemlock.le-fay.org
 MASTER_ADDR!=	getaddrinfo -f inet6 -p tcp -t stream ${MASTER} \
 			| awk '{ print $$4 }'
 
@@ -77,7 +77,7 @@ LFNETWORKS= \
 
 # All servers which run Unbound.
 UNBOUND_SERVERS?= \
-	hemlock.eden.le-fay.org \
+	hemlock.le-fay.org \
 	fuchsia.eden.le-fay.org \
 	yarrow.le-fay.org \
 	amaranth.le-fay.org \
@@ -92,7 +92,7 @@ UNBOUND_FORWARDERS?= \
 # -Dforwarder means this server forwards queries to ${UNBOUND_FORWARDERS}.
 # -Dnolocal means this server doesn't have a copy of our local zones.
 #
-UNBOUND_PROCESS_FLAGS.hemlock.eden.le-fay.org=	-Dnolocal=yes -Dforwarder=yes
+UNBOUND_PROCESS_FLAGS.hemlock.le-fay.org=	-Dnolocal=yes -Dforwarder=yes
 UNBOUND_PROCESS_FLAGS.fuchsia.eden.le-fay.org=	-Dnolocal=yes -Dforwarder=yes
 UNBOUND_PROCESS_FLAGS.amaranth.le-fay.org=	-Dnolocal=yes
 UNBOUND_PROCESS_FLAGS.yarrow.le-fay.org=	-Dnolocal=yes
