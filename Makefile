@@ -33,7 +33,6 @@ DN42_MASTER=	fd42:4242:2601:ac53::1
 # The zones we serve.
 ZONES=	le-fay.org \
 	le-fay.dn42 \
-	rt.uk.eu.org \
 	b.6.0.b.3.8.a.0.b.5.d.f.ip6.arpa \
 	e.1.0.0.0.8.c.1.6.0.a.2.ip6.arpa \
 	b.6.0.0.8.9.0.1.0.0.a.2.ip6.arpa \
